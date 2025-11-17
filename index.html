@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Momentum</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">Momentum</div>
+        <div class="user" id="userDisplay"></div>
+        <svg
+          id="settingsBtn"
+          class="icon-btn"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-label="Settings"
+        >
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M12 8v8M8 12h8"></path>
+        </svg>
+      </header>
+
+      <main>
+        <section id="buildSection" class="screen">
+          <h1 class="screen-title">build your day</h1>
+          <div class="add-row">
+            <input id="habitInput" type="text" placeholder="add a habit" />
+            <button id="addBtn">add</button>
+          </div>
+
+          <div class="apps-locker">
+            <button id="appsTrigger" class="apps-trigger">
+              Select apps to lock
+            </button>
+            <div id="appsPanel" class="apps-panel" aria-hidden="true">
+              <div class="apps-panel-header">
+                <span>Lock these apps during Focus</span>
+                <button id="appsClose" class="apps-close" aria-label="Close">
+                  ×
+                </button>
+              </div>
+              <ul id="appsList" class="apps-list"></ul>
+              <button id="appsSave" class="apps-save">Done</button>
+            </div>
+            <p id="appsSummary" class="apps-summary"></p>
+          </div>
+
+          <ul id="habitList" class="list"></ul>
+
+          <div class="actions">
+            <button id="focusBtn" class="primary">focus</button>
+            <div id="lockHint" class="hint"></div>
+          </div>
+        </section>
+
+        <section id="focusSection" class="screen hidden">
+          <div class="lock-badge" id="lockBadge"></div>
+          <div class="focus-card">
+            <div
+              id="lockedAppsBadge"
+              class="locked-apps-badge"
+              aria-hidden="true"
+            ></div>
+            <div class="progress" id="progressDots"></div>
+            <h2 id="currentHabit" class="focus-text"></h2>
+            <button id="completeBtn" class="primary large">complete</button>
+            <div id="doneAll" class="done hidden">all done for this block</div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <aside id="settingsPanel" class="panel hidden">
+      <div class="panel-head">
+        <button id="closeSettings" class="icon-btn" aria-label="Close settings">
+          ←
+        </button>
+        <div class="panel-title">settings</div>
+      </div>
+      <div class="panel-body">
+        <div class="setting-row">
+          <label>username</label>
+          <input id="usernameEdit" type="text" placeholder="your name" />
+          <button id="saveUsername">save</button>
+        </div>
+        <div class="setting-row">
+          <label>theme</label>
+          <select disabled>
+            <option>dark</option>
+            <option>light</option>
+          </select>
+        </div>
+        <div class="setting-row">
+          <label>daily reset time</label>
+          <input type="time" disabled />
+        </div>
+        <div class="setting-row">
+          <label>sounds</label>
+          <input type="checkbox" disabled />
+        </div>
+        <div class="setting-row">
+          <label>debug</label>
+          <button id="resetFocus">reset focus lock</button>
+        </div>
+      </div>
+    </aside>
+
+    <div id="intro" class="modal hidden">
+      <div class="sheet">
+        <h2>welcome</h2>
+        <p>one habit at a time. fewer decisions. more momentum.</p>
+        <input id="usernameInput" type="text" placeholder="pick a username" />
+        <button id="startIntro" class="primary">start</button>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
