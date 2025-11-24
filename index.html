@@ -31,6 +31,7 @@
       <main>
         <section id="buildSection" class="screen">
           <h1 class="screen-title">build your day</h1>
+
           <div class="add-row">
             <input id="habitInput" type="text" placeholder="add a habit" />
             <button id="addBtn">add</button>
@@ -40,6 +41,7 @@
             <button id="appsTrigger" class="apps-trigger">
               Select apps to lock
             </button>
+
             <div id="appsPanel" class="apps-panel" aria-hidden="true">
               <div class="apps-panel-header">
                 <span>Lock these apps during Focus</span>
@@ -50,6 +52,7 @@
               <ul id="appsList" class="apps-list"></ul>
               <button id="appsSave" class="apps-save">Done</button>
             </div>
+
             <p id="appsSummary" class="apps-summary"></p>
           </div>
 
@@ -59,18 +62,28 @@
             <button id="focusBtn" class="primary">focus</button>
             <div id="lockHint" class="hint"></div>
           </div>
+
+          <!-- NEW MOMENTUM STREAK SECTION -->
+          <div class="streak-box">
+            <div class="streak-title">momentum streak</div>
+            <div class="streak-value">—</div>
+          </div>
         </section>
 
         <section id="focusSection" class="screen hidden">
           <div class="lock-badge" id="lockBadge"></div>
+
           <div class="focus-card">
             <div
               id="lockedAppsBadge"
               class="locked-apps-badge"
               aria-hidden="true"
             ></div>
+
             <div class="progress" id="progressDots"></div>
+
             <h2 id="currentHabit" class="focus-text"></h2>
+
             <button id="completeBtn" class="primary large">complete</button>
             <div id="doneAll" class="done hidden">all done for this block</div>
           </div>
@@ -85,12 +98,14 @@
         </button>
         <div class="panel-title">settings</div>
       </div>
+
       <div class="panel-body">
         <div class="setting-row">
           <label>username</label>
           <input id="usernameEdit" type="text" placeholder="your name" />
           <button id="saveUsername">save</button>
         </div>
+
         <div class="setting-row">
           <label>theme</label>
           <select disabled>
@@ -98,14 +113,17 @@
             <option>light</option>
           </select>
         </div>
+
         <div class="setting-row">
           <label>daily reset time</label>
           <input type="time" disabled />
         </div>
+
         <div class="setting-row">
           <label>sounds</label>
           <input type="checkbox" disabled />
         </div>
+
         <div class="setting-row">
           <label>debug</label>
           <button id="resetFocus">reset focus lock</button>
