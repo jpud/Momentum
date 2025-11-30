@@ -15,6 +15,8 @@ let username = store.get("username", "");
 let habits = store.get("habits", []);
 let lockUntil = store.get("lockUntil", 0);
 let index = store.get("index", 0);
+// NEW: momentum streak state
+let momentumStreak = store.get("momentumStreak", 0);
 
 const buildSection = document.getElementById("buildSection");
 const focusSection = document.getElementById("focusSection");
@@ -40,6 +42,9 @@ const closeSettings = document.getElementById("closeSettings");
 const usernameEdit = document.getElementById("usernameEdit");
 const saveUsername = document.getElementById("saveUsername");
 const resetFocus = document.getElementById("resetFocus");
+
+// NEW: streak value element
+const streakValue = document.querySelector(".streak-value");
 
 const AVAILABLE_APPS = [
   "Instagram",
@@ -69,6 +74,8 @@ function save() {
   store.set("habits", habits);
   store.set("lockUntil", lockUntil);
   store.set("index", index);
+  // NEW: persist streak
+  store.set("momentumStreak", momentumStreak);
 }
 
 function now() {
@@ -84,6 +91,16 @@ function resetIfUnlocked() {
     lockUntil = 0;
     index = 0;
     save();
+  }
+}
+
+// NEW: update streak display
+function updateStreakUI() {
+  if (!streakValue) return;
+  if (momentumStreak > 0) {
+    streakValue.textContent = String(momentumStreak);
+  } else {
+    streakValue.textContent = "—";
   }
 }
 
@@ -243,16 +260,25 @@ saveUsername.onclick = () => {
   settingsPanel.classList.add("hidden");
 };
 
+// UPDATED: reset focus also increments momentum streak
 resetFocus.onclick = () => {
   lockUntil = 0;
   for (let i = 0; i < habits.length; i++) habits[i].done = false;
   index = 0;
+
+  // increment streak for MVP
+  momentumStreak += 1;
   save();
+  updateStreakUI();
+
   settingsPanel.classList.add("hidden");
   showBuild();
 };
 
 function boot() {
+  // always reflect current streak on load
+  updateStreakUI();
+
   const firstRun = !username;
   if (firstRun) {
     intro.classList.remove("hidden");
