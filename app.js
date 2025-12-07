@@ -18,6 +18,7 @@ let habits = store.get("habits", []);
 let lockUntil = store.get("lockUntil", 0);
 let index = store.get("index", 0);
 let momentumStreak = store.get("momentumStreak", 0);
+let theme = store.get("theme", "dark");
 
 // —— DOM HOOKS: CORE UI ——
 const buildSection = document.getElementById("buildSection");
@@ -46,6 +47,7 @@ const closeSettings = document.getElementById("closeSettings");
 const usernameEdit = document.getElementById("usernameEdit");
 const saveUsername = document.getElementById("saveUsername");
 const resetFocus = document.getElementById("resetFocus");
+const themeSelect = document.getElementById("themeSelect");
 
 // —— STREAK UI REF ——
 const streakValue = document.querySelector(".streak-value");
@@ -83,6 +85,7 @@ function save() {
   store.set("lockUntil", lockUntil);
   store.set("index", index);
   store.set("momentumStreak", momentumStreak);
+  store.set("theme", theme);
 }
 
 // —— TIMING HELPERS ——
@@ -212,8 +215,17 @@ function renderFocus() {
 }
 
 // —— MODE SWITCHERS ——
+function applyTheme() {
+  if (theme === "light") {
+    document.body.classList.add("light");
+  } else {
+    document.body.classList.remove("light");
+  }
+}
+
 function showBuild() {
   resetIfUnlocked();
+  applyTheme();
   buildSection.classList.remove("hidden");
   focusSection.classList.add("hidden");
   lockedAppsBadge.textContent = "";
@@ -222,6 +234,7 @@ function showBuild() {
 }
 
 function showFocus() {
+  applyTheme();
   buildSection.classList.add("hidden");
   focusSection.classList.remove("hidden");
   showLockedAppsInFocus();
@@ -267,8 +280,10 @@ completeBtn.onclick = nextHabit;
 // —— SETTINGS PANEL ACTIONS ——
 settingsBtn.onclick = () => {
   usernameEdit.value = username || "";
+  themeSelect.value = theme;
   settingsPanel.classList.remove("hidden");
 };
+
 closeSettings.onclick = () => settingsPanel.classList.add("hidden");
 
 saveUsername.onclick = () => {
@@ -278,6 +293,12 @@ saveUsername.onclick = () => {
   save();
   userDisplay.textContent = `@${username}`;
   settingsPanel.classList.add("hidden");
+};
+
+themeSelect.onchange = () => {
+  theme = themeSelect.value;
+  save();
+  applyTheme();
 };
 
 // —— RESET + STREAK ——
@@ -295,6 +316,7 @@ resetFocus.onclick = () => {
 // —— APP INIT ——
 function boot() {
   updateStreakUI();
+  applyTheme();
   const firstRun = !username;
   if (firstRun) {
     intro.classList.remove("hidden");
@@ -384,9 +406,6 @@ setInterval(() => {
   }
 }, 30000);
 
-//
-// FORCE RESET WHEN USING LIVE SERVER
-//
 window.addEventListener("load", () => {
   if (location.hostname === "127.0.0.1" || location.hostname === "localhost") {
     localStorage.clear();

@@ -717,3 +717,24 @@ button:active {
   background: rgba(255, 255, 255, 0.05);
   transition: background 0.2s ease;
 }
+
+body.light {
+  --bg: #fafafa;
+  --bg-2: #e6e6e6;
+  --surface: #ffffff;
+  --surface-2: #f2f2f2;
+  --elev: #eaeaea;
+  --text: #111111;
+  --muted: #555555;
+  --line: #cccccc;
+  --brand-ink: #111111;
+}
+
+body.light {
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+}
+
+body.light .primary {
+  background: linear-gradient(135deg, var(--brand-2), var(--brand-1));
+  color: var(--text);
+}

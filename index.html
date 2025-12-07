@@ -106,13 +106,7 @@
           <button id="saveUsername">save</button>
         </div>
 
-        <div class="setting-row">
-          <label>theme</label>
-          <select disabled>
-            <option>dark</option>
-            <option>light</option>
-          </select>
-        </div>
+  
 
         <div class="setting-row">
           <label>daily reset time</label>
@@ -125,10 +119,19 @@
         </div>
 
         <div class="setting-row">
+          <label>theme</label>
+          <select id="themeSelect">
+            <option value="dark">dark</option>
+            <option value="light">light</option>
+          </select>
+        </div>
+        
+        <div class="setting-row">
           <label>debug</label>
           <button id="resetFocus">reset focus lock</button>
         </div>
-      </div>
+        
+        
     </aside>
 
     <div id="intro" class="modal hidden">
