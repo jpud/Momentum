@@ -1,3 +1,4 @@
+// —— CORE STORAGE CONFIG ——
 const store = {
   get(key, fallback) {
     try {
@@ -11,13 +12,14 @@ const store = {
   },
 };
 
+// —— GLOBAL STATE ——
 let username = store.get("username", "");
 let habits = store.get("habits", []);
 let lockUntil = store.get("lockUntil", 0);
 let index = store.get("index", 0);
-// NEW: momentum streak state
 let momentumStreak = store.get("momentumStreak", 0);
 
+// —— DOM HOOKS: CORE UI ——
 const buildSection = document.getElementById("buildSection");
 const focusSection = document.getElementById("focusSection");
 const habitList = document.getElementById("habitList");
@@ -32,10 +34,12 @@ const doneAll = document.getElementById("doneAll");
 const lockBadge = document.getElementById("lockBadge");
 const userDisplay = document.getElementById("userDisplay");
 
+// —— INTRO ONBOARDING UI ——
 const intro = document.getElementById("intro");
 const usernameInput = document.getElementById("usernameInput");
 const startIntro = document.getElementById("startIntro");
 
+// —— SETTINGS UI ——
 const settingsBtn = document.getElementById("settingsBtn");
 const settingsPanel = document.getElementById("settingsPanel");
 const closeSettings = document.getElementById("closeSettings");
@@ -43,9 +47,10 @@ const usernameEdit = document.getElementById("usernameEdit");
 const saveUsername = document.getElementById("saveUsername");
 const resetFocus = document.getElementById("resetFocus");
 
-// NEW: streak value element
+// —— STREAK UI REF ——
 const streakValue = document.querySelector(".streak-value");
 
+// —— AVAILABLE APPS + LOCKING ——
 const AVAILABLE_APPS = [
   "Instagram",
   "TikTok",
@@ -58,9 +63,11 @@ const AVAILABLE_APPS = [
   "Facebook",
   "Pinterest",
 ];
+
 const appsState = {
   selected: JSON.parse(localStorage.getItem("lockedApps") || "[]"),
 };
+
 const appsTrigger = document.getElementById("appsTrigger");
 const appsPanel = document.getElementById("appsPanel");
 const appsClose = document.getElementById("appsClose");
@@ -69,15 +76,16 @@ const appsSave = document.getElementById("appsSave");
 const appsSummary = document.getElementById("appsSummary");
 const lockedAppsBadge = document.getElementById("lockedAppsBadge");
 
+// —— PERSIST STATE ——
 function save() {
   store.set("username", username);
   store.set("habits", habits);
   store.set("lockUntil", lockUntil);
   store.set("index", index);
-  // NEW: persist streak
   store.set("momentumStreak", momentumStreak);
 }
 
+// —— TIMING HELPERS ——
 function now() {
   return Date.now();
 }
@@ -85,6 +93,7 @@ function locked() {
   return now() < Number(lockUntil || 0);
 }
 
+// —— RESET WHEN LOCK EXPIRES ——
 function resetIfUnlocked() {
   if (!locked() && lockUntil) {
     for (let i = 0; i < habits.length; i++) habits[i].done = false;
@@ -94,34 +103,36 @@ function resetIfUnlocked() {
   }
 }
 
-// NEW: update streak display
+// —— STREAK DISPLAY ——
 function updateStreakUI() {
   if (!streakValue) return;
-  if (momentumStreak > 0) {
-    streakValue.textContent = String(momentumStreak);
-  } else {
-    streakValue.textContent = "—";
-  }
+  streakValue.textContent = momentumStreak > 0 ? String(momentumStreak) : "—";
 }
 
+// —— BUILD SCREEN RENDER ——
 function renderBuild() {
   userDisplay.textContent = username ? `@${username}` : "";
   habitList.innerHTML = "";
+
   for (let i = 0; i < habits.length; i++) {
     const li = document.createElement("li");
     li.className = "item";
+
     const title = document.createElement("div");
     title.className = "item-title";
     title.textContent = habits[i].title;
+
     const ctrls = document.createElement("div");
     ctrls.className = "item-ctrls";
 
     const up = document.createElement("button");
     up.className = "small";
     up.textContent = "↑";
+
     const down = document.createElement("button");
     down.className = "small";
     down.textContent = "↓";
+
     const del = document.createElement("button");
     del.className = "small";
     del.textContent = "×";
@@ -155,6 +166,7 @@ function renderBuild() {
     const remaining = Number(lockUntil) - now();
     const hrs = Math.max(0, Math.floor(remaining / 3600000));
     const mins = Math.max(0, Math.floor((remaining % 3600000) / 60000));
+
     lockHint.textContent = `locked for ${hrs}h ${mins}m`;
     focusBtn.disabled = true;
     habitInput.disabled = true;
@@ -169,8 +181,10 @@ function renderBuild() {
   }
 }
 
+// —— FOCUS SCREEN RENDER ——
 function renderFocus() {
   progressDots.innerHTML = "";
+
   for (let i = 0; i < habits.length; i++) {
     const d = document.createElement("div");
     d.className = "dot" + (i < index ? " done" : i === index ? " on" : "");
@@ -197,6 +211,7 @@ function renderFocus() {
   }
 }
 
+// —— MODE SWITCHERS ——
 function showBuild() {
   resetIfUnlocked();
   buildSection.classList.remove("hidden");
@@ -213,6 +228,7 @@ function showFocus() {
   renderFocus();
 }
 
+// —— FOCUS STARTER ——
 function startFocus() {
   if (habits.length === 0 || locked()) return;
   lockUntil = now() + 12 * 60 * 60 * 1000;
@@ -221,6 +237,7 @@ function startFocus() {
   showFocus();
 }
 
+// —— HABIT ACTIONS ——
 function addHabit() {
   const t = (habitInput.value || "").trim();
   if (!t) return;
@@ -239,6 +256,7 @@ function nextHabit() {
   renderFocus();
 }
 
+// —— BUTTON WIRING ——
 addBtn.onclick = addHabit;
 habitInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") addHabit();
@@ -246,11 +264,13 @@ habitInput.addEventListener("keydown", (e) => {
 focusBtn.onclick = startFocus;
 completeBtn.onclick = nextHabit;
 
+// —— SETTINGS PANEL ACTIONS ——
 settingsBtn.onclick = () => {
   usernameEdit.value = username || "";
   settingsPanel.classList.remove("hidden");
 };
 closeSettings.onclick = () => settingsPanel.classList.add("hidden");
+
 saveUsername.onclick = () => {
   const v = (usernameEdit.value || "").trim();
   if (!v) return;
@@ -260,25 +280,21 @@ saveUsername.onclick = () => {
   settingsPanel.classList.add("hidden");
 };
 
-// UPDATED: reset focus also increments momentum streak
+// —— RESET + STREAK ——
 resetFocus.onclick = () => {
   lockUntil = 0;
   for (let i = 0; i < habits.length; i++) habits[i].done = false;
   index = 0;
-
-  // increment streak for MVP
   momentumStreak += 1;
   save();
   updateStreakUI();
-
   settingsPanel.classList.add("hidden");
   showBuild();
 };
 
+// —— APP INIT ——
 function boot() {
-  // always reflect current streak on load
   updateStreakUI();
-
   const firstRun = !username;
   if (firstRun) {
     intro.classList.remove("hidden");
@@ -289,6 +305,7 @@ function boot() {
   }
 }
 
+// —— INTRO SUBMIT ——
 startIntro.onclick = () => {
   const v = (usernameInput.value || "").trim();
   if (!v) return;
@@ -298,6 +315,7 @@ startIntro.onclick = () => {
   showBuild();
 };
 
+// —— APPS PANEL RENDER ——
 function renderAppsList() {
   appsList.innerHTML = AVAILABLE_APPS.map((name) => {
     const checked = appsState.selected.includes(name) ? "checked" : "";
@@ -311,11 +329,9 @@ function renderAppsList() {
 }
 
 function updateAppsSummary() {
-  if (!appsState.selected.length) {
-    appsSummary.textContent = "No apps selected for lock.";
-  } else {
-    appsSummary.textContent = `Locked: ${appsState.selected.join(", ")}`;
-  }
+  appsSummary.textContent = appsState.selected.length
+    ? `Locked: ${appsState.selected.join(", ")}`
+    : "No apps selected for lock.";
 }
 
 function openAppsPanel() {
@@ -338,15 +354,13 @@ function collectSelectedApps() {
 
 function showLockedAppsInFocus() {
   const saved = JSON.parse(localStorage.getItem("lockedApps") || "[]");
-  if (saved.length) {
-    lockedAppsBadge.textContent = `Locked: ${saved.join(", ")}`;
-    lockedAppsBadge.classList.add("show");
-  } else {
-    lockedAppsBadge.textContent = "";
-    lockedAppsBadge.classList.remove("show");
-  }
+  lockedAppsBadge.textContent = saved.length
+    ? `Locked: ${saved.join(", ")}`
+    : "";
+  lockedAppsBadge.classList.toggle("show", saved.length > 0);
 }
 
+// —— APPS EVENTS ——
 appsTrigger?.addEventListener("click", () => {
   const open = appsPanel.getAttribute("aria-hidden") === "false";
   open ? closeAppsPanel() : openAppsPanel();
@@ -357,9 +371,9 @@ appsSave?.addEventListener("click", () => {
   closeAppsPanel();
 });
 
+// —— TICK LOOP ——
 updateAppsSummary();
 boot();
-
 setInterval(() => {
   if (locked()) {
     if (focusSection.classList.contains("hidden")) renderBuild();
@@ -369,3 +383,12 @@ setInterval(() => {
     showBuild();
   }
 }, 30000);
+
+//
+// FORCE RESET WHEN USING LIVE SERVER
+//
+window.addEventListener("load", () => {
+  if (location.hostname === "127.0.0.1" || location.hostname === "localhost") {
+    localStorage.clear();
+  }
+});
